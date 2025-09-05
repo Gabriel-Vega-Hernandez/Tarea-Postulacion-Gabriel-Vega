@@ -6,13 +6,14 @@ import math, numpy as np # Los necesitare para mi solución
 def calculate_panels(panel_width: int, panel_height: int, 
                     roof_width: int, roof_height: int) -> int:
 
+    # Booleano que define si el techo es rectangular o en forma de triangulo isosceles
     rectangular = True
 
     # Definimos dos grilla que representan nuestro techo vacio
     if rectangular:
         roof_1 = np.zeros((roof_height, roof_width))
         roof_2 = np.zeros((roof_height, roof_width))
-    
+
     # Para el caso de un techo con forma de triangulo isosceles, rellenamos la grilla con -1 en las posiciones que no existen
     else:
         roof_1 = np.ones((roof_height, roof_width)) * -1
@@ -32,7 +33,6 @@ def calculate_panels(panel_width: int, panel_height: int,
     Vertical = math.floor(roof_width / panel_width), math.floor(roof_height  /panel_height)
     Horizontal = math.floor(roof_width / panel_height), math.floor(roof_height / panel_width)
 
-
     # Agregamos todos los paneles posibles que quepan de manera horizontal
     if 0 not in Horizontal:
         n_total_1, roof_1 = panel_positioning([panel_width, panel_height], roof_1, n_total_1, rectangular)
@@ -43,11 +43,10 @@ def calculate_panels(panel_width: int, panel_height: int,
 
         # Rellenamos el segundo techo en la otra direccion, para ver si una de las dos permite mas paneles
         n_total_2, roof_2 = panel_positioning([panel_height, panel_width], roof_2, n_total_2, rectangular)
-    
+
     if 0 not in Horizontal:
         n_total_2, roof_2 = panel_positioning([panel_width, panel_height], roof_2, n_total_2, rectangular)
 
-    
     # Revisamos cual configuracion es mejor
     if n_total_1 >= n_total_2:
         print(roof_1)
@@ -58,6 +57,7 @@ def calculate_panels(panel_width: int, panel_height: int,
 
 
 def check_availability(panel_position: list, panel_size: list, roof: np.array):
+
     for i in range(panel_size[0]):
         for j in range(panel_size[1]):
             # Me aseguro de que este espacion no este siendo ocupado por otro panel
@@ -70,7 +70,7 @@ def check_availability(panel_position: list, panel_size: list, roof: np.array):
 def add_panel(panel_position: list, panel_size: list, roof: np.array, n_panel: int):
 
     count = 0
-    
+
     # Primero me fijo en si un panel que parte en la posicion dada, es capaz de entrar en la grilla
     if panel_position[0] + panel_size[0] > (len(roof)) or panel_position[1] + panel_size[1] > (len(roof[0])):
         pass
@@ -81,10 +81,8 @@ def add_panel(panel_position: list, panel_size: list, roof: np.array, n_panel: i
             for j in range(panel_size[1]):
                 # Relleno los espacion correspondientes con un nuevo panel
                 roof[panel_position[0] + i, panel_position[1] + j] = n_panel + 1
-                count += 1
-                
-                    
-    
+                count += 1         
+
     return count, roof
 
 
@@ -97,7 +95,7 @@ def panel_positioning(panel_orientation: list, roof: np.array, n_panel: int, rec
                     add_count, roof = add_panel([i, j], [panel_orientation[0], panel_orientation[1]], roof, n_panel)
                     # add_count cuenta cada posicion ocupada por el panel en la grilla, asi que dividimos por el area
                     n_panel = n_panel + (add_count  / (panel_orientation[0] * panel_orientation[1]))
-        
+
         return n_panel, roof
     else:
         # Recorremos toda la grilla
@@ -105,7 +103,7 @@ def panel_positioning(panel_orientation: list, roof: np.array, n_panel: int, rec
                 for j in list(range(0, len(roof[0]))):
                     add_count, roof = add_panel([i, j], [panel_orientation[0], panel_orientation[1]], roof, n_panel)
                     n_panel = n_panel + (add_count  / (panel_orientation[0] * panel_orientation[1]))
-        
+
         return n_panel, roof
 
 
