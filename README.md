@@ -34,7 +34,7 @@ Tu solución debe pasar los siguientes casos de prueba:
 
 ## 📝 Tu Solución
 
-Explica acá
+Asi lo solucione
 
 ---
 
@@ -43,20 +43,25 @@ Explica acá
 Si completaste alguno de los ejercicios bonus, explica tu solución aquí:
 
 ### Bonus Implementado
-*[Indica cuál bonus implementaste: Opción 1 (techo triangular) o Opción 2 (rectángulos superpuestos)]*
 
-
+Implemente el bonus 1, un techo triangular, asumiendo que la base sería roof_width y la altura roof_height.
 
 
 ### Explicación del Bonus
-*[Explica cómo adaptaste tu algoritmo para resolver el bonus]*
 
-
+Hubo tres alteraciones que se realizaron para resolver el bonus:
+- Se agregó un booleano para decidir qué tipo de techo se requiere
+- Se agregó una sección que modifica las grillas de techo para rellenar los espacios no válidos con -1 y dejar una forma triangular de ceros.
+- Se modificó la función panel_positioning() de tal manera que si el techo no es rectangular, chequee todos los espacios de la grilla y no solo en intervalos del tamaño de los paneles.
+Una vez hecho esto, la logica es la misma que en el caso rectangular.
 
 
 ---
 
 ## 🤔 Supuestos y Decisiones
 
-*[Si tuviste que tomar algún supuesto o decisión de diseño, explícalo aquí]*
+Hubo dos suposiciones que se hicieron para resolver el ejercicio:
+- Los paneles solo pueden ir de manera horizontal o vertical, pues el agregar rotaciones adicionales aumenta la dificultad de una manera muy alta para el tiempo dado.
+- Llenar el espacio con todos los paneles posibles en una dirección y luego en la otra resultará en la máxima cantidad de paneles. No estoy seguro de si es el caso, pero como no pude pensar en ningún contraejemplo decidí asumir que sería suficiente.
+
 
