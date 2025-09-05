@@ -6,43 +6,42 @@ import math, numpy as np # Los necesitare para mi solución
 def calculate_panels(panel_width: int, panel_height: int, 
                     roof_width: int, roof_height: int) -> int:
 
-    # Definimos una grilla que representa nuestro techo vacio
-    roof = np.zeros((roof_width, roof_height))
+    # Definimos dos grilla que representan nuestro techo vacio
+    roof_1 = np.zeros((roof_height, roof_width))
+    roof_2 = np.zeros((roof_height, roof_width))
 
     # Contadores para cuatos paneles hemos agregado
-    n_total = 0
+    n_total_1 = 0
+    n_total_2 = 0
 
     # Sirve para determinar si es posible orientar los paneles de manera horizontal y/o vertical
-    Horizontal = math.floor(roof_width / panel_width), math.floor(roof_height  /panel_height)
-    Vertical = math.floor(roof_width / panel_height), math.floor(roof_height / panel_width)
-
-    # Sirve para ver si es mejor empezar colocando paneles de forma horizontal o vertical
-    if (Horizontal[0] * Horizontal[1]) > (Vertical[0] * Vertical[1]):
-        first_size = panel_width
-        second_size = panel_height
-    else:
-        first_size = panel_height
-        second_size = panel_width
+    Vertical = math.floor(roof_width / panel_width), math.floor(roof_height  /panel_height)
+    Horizontal = math.floor(roof_width / panel_height), math.floor(roof_height / panel_width)
 
     # Agregamos todos los paneles posibles que quepan de manera horizontal
     if 0 not in Horizontal:
-        for i in list(range(0, len(roof), first_size)):
-            for j in list(range(0, len(roof[0]), second_size)):
-                add_count, roof = add_panel([i, j], [first_size, second_size], roof, n_total)
-                n_total = n_total + (add_count  / (first_size * second_size))
+        n_total_1, roof_1 = panel_position([panel_width, panel_height], roof_1, n_total_1)
 
     # Agregamos todos los paneles posibles que quepan de manera vertical en el espacio restante
     if 0 not in Vertical:
-        for i in list(range(0, len(roof), second_size)):
-            for j in list(range(0, len(roof[0]), first_size)):
-                add_count, roof = add_panel([i, j], [second_size, first_size], roof, n_total)
-                n_total = n_total + (add_count  / (first_size * second_size))
+        n_total_1, roof_1 = panel_position([panel_height, panel_width], roof_1, n_total_1)
+
+        # Rellenamos el segundo techo en la otra direccion, para ver si una de las dos permite mas paneles
+        n_total_2, roof_2 = panel_position([panel_height, panel_width], roof_2, n_total_2)
+    
+    if 0 not in Horizontal:
+        n_total_2, roof_2 = panel_position([panel_width, panel_height], roof_2, n_total_2)
 
     else:
         pass
-
-    print(roof)
-    return n_total
+    
+    # Revisamos cual configuracion es mejor
+    if n_total_1 >= n_total_2:
+        print(roof_1)
+        return n_total_1
+    else:
+        print(roof_2)
+        return n_total_2
 
 
 def add_panel(panel_position: list, panel_size: list, roof: np.array, n_panel: int):
@@ -64,6 +63,18 @@ def add_panel(panel_position: list, panel_size: list, roof: np.array, n_panel: i
                     count += 1
     
     return count, roof
+
+
+def panel_position(panel_orientation: list, roof: np.array, n_panel: int):
+
+    # Recorremos la grilla en intervalos del tamaño del panel
+    for i in list(range(0, len(roof), panel_orientation[0])):
+            for j in list(range(0, len(roof[0]), panel_orientation[1])):
+                add_count, roof = add_panel([i, j], [panel_orientation[0], panel_orientation[1]], roof, n_panel)
+                # add_count cuenta cada posicion ocupada por el panel en la grilla, asi que dividimos por el area
+                n_panel = n_panel + (add_count  / (panel_orientation[0] * panel_orientation[1]))
+    
+    return n_panel, roof
 
 
 def run_tests() -> None:
