@@ -17,6 +17,12 @@ npm install
 npm start
 ```
 
+En caso de correr con display
+```bash
+cd typescript
+npx ts-node main_w_display.ts
+```
+
 ### Opción 2: Solución en Python
 ```bash
 cd python

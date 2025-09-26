@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <title>Display roofs</title>
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+  <h1>Representacion Techos</h1>
+
+  <div id="arrays-container"></div>
+
+  <script>
+    // Asignamos un color unico a cada valor unico en los arrays
+    function ObtenerColores(arrays) {
+      // Flatten all arrays to get all unique values
+      const unique = Array.from(new Set(arrays.flat(2)));
+      const paletaColores = [
+        "#64b5f6", "#e57373", "#81c784", "#ffd54f", "#ba68c8",
+        "#4dd0e1", "#ffb74d", "#a1887f", "#90a4ae", "#f06292",
+        "#7986cb", "#aed581", "#fff176", "#9575cd", "#4fc3f7"
+      ];
+      const colores = {};
+      unique.forEach((val, idx) => {
+        colores[val] = paletaColores[idx % paletaColores.length];
+      });
+      return colores;
+    }
+
+    fetch('http://localhost:3000/array')
+      .then(response => response.json())
+      .then(roofs => {
+        const colores = ObtenerColores(roofs);
+        const container = document.getElementById('arrays-container');
+        let html = '';
+        roofs.forEach((roof, idx) => {
+          html += `<div class="array-title">Techo ${idx + 1}</div>`;
+          html += '<table class="array-table">';
+          roof.forEach(fila => {
+            html += '<tr>';
+            fila.forEach(celda => {
+              html += `<td style="background:${colores[celda]};">${celda}</td>`;
+            });
+            html += '</tr>';
+          });
+          html += '</table>';
+        });
+        container.innerHTML = html;
+      })
+      .catch(() => {
+        document.getElementById('arrays-container').innerHTML = '<p style="color:red;">No se encontro ningun techo.</p>';
+      });
+
+  </script>
+
+</body>
+
+</html>
